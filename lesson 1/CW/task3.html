@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+ <head>
+   <meta charset="utf-8" />
+   <title>JS-ADV. Lesson 1. Task 3 </title>
+</head>
+<body>
+  <div class="wrap" id="app"></div>
+
+  <script>
+  /*
+      Задание:
+
+      Сложить в элементе с id App следующую размету HTML:
+
+      <header>
+        <a href="http://google.com.ua">
+          <img src="https://www.google.com.ua/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png">
+        </a>
+        <div class="menu">
+          <a href="#1"> link 1</a>
+          <a href="#1"> link 2</a>
+          <a href="#1"> link 3</a>
+        </div>
+      </header>
+
+      Используя следующие методы для работы:
+      getElementById
+      createElement
+      element.innerText
+      element.className
+      element.setAttribute
+      element.appendChild
+
+  */
+  
+  var parent = document.querySelector('.wrap');
+  var header = document.createElement('header');
+  var a1 = document.createElement('a');
+  var div = document.createElement('div');
+  var a2 = document.createElement('a');
+  var a3 = document.createElement('a');
+  var a4 = document.createElement('a');
+  
+  var img = document.createElement('img');
+  
+
+  a1.href = "http://google.com.ua";
+  a2.href = "#1";
+  a3.href = "#1";
+  a4.href = "#1";
+  
+  a2.innerText = 'link 1';
+  a3.innerText = 'link 1';
+  a4.innerText = 'link 1';
+  
+  div.className = "menu";
+  img.src = "https://www.google.com.ua/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png";
+
+  header.appendChild(a1);
+  header.appendChild(div);
+  a1.appendChild(img);
+  div.appendChild(a2);
+  div.appendChild(a3);
+  div.appendChild(a4);
+  
+  parent.appendChild(header);
+
+  
+
+  console.log(header);
+
+
+  // var header = document.createElement('header');
+  // var div = document.createElement('div');
+  // var link = document.createElement('a');
+  //     link.href = "http://google.com.ua";
+
+  //     header.appendChild(div);
+  //     header.appendChild(link);
+  //     document.body.appendChild(link);
+  //     document.body.appendChild(header);
+  </script>
+</body>
+</html>

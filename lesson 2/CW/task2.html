@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>ITEA-JS ADVANCED - LESSON 2: CLASSWORK 2</title>
+  <link rel="stylesheet" href="css/style.min.css" />
+</head>
+<body>
+  <div class="wrap">
+    <div class="testBlock hover">
+      <button class="iButton" id="mouseHover">Наведи</button>
+      <ul id="hoverResult" class="resultBlock">
+        <!-- <li class="red">Hovered!</li>
+        <li class="blue">Hovered!</li>
+        <li class="orange">Hovered!</li>
+        <li class="orange">Hovered!</li>
+        <li class="purple">Hovered!</li> -->
+      </ul>
+    </div>
+
+    <div class="testBlock click">
+      <button class="iButton" id="mouseClick">Нажми левой кнопкой мышки</button>
+      <div id="clickResult" class="resultBlock one two three four five six"></div>
+    </div>
+
+    <div class="testBlock context">
+      <button class="iButton" id="mouseContext">Вызови контекстное меню</button>
+      <div id="contextResult" class="resultBlock"></div>
+    </div>
+
+    <div class="testBlock keyboard">
+      <button class="iButton" id="keyboardButton">Нажми на клавиатуре</button>
+      <div id="keyboardResult" class="resultBlock"></div>
+    </div>
+
+  </div>
+
+  <script>
+    /*
+
+      Поработаем немного с ивентами:
+      onmouseenter
+      onclick
+      oncontextmenu
+      onkeydown
+
+      Задание:
+      На каждую из конопок назначить действие которое будет выполнять следующее действие:
+      1.На ховер(onmouseenter) повесить обработчик который будет при каждом наведении
+        на кнопку будет выводить в блок результатом елемент li с текстом "hovered!"
+        у которого будет один из следующих класов:
+        red blue green orange purple
+
+      2.На кнопку клика(onclick) повесить обработчик который будет удалять классы с
+        блока с результатом по очереди в таком порядке:
+
+        six > two > three > four > one > five
+
+        после того как блок окажется пустым, добавить их в порядке возрастания
+
+        one > two > three ... > six
+
+      3.На кнопку контекстного меню (oncontextmenu) повесить обработчик который в блок
+        для результата выведет блок со списком меню используя следующий шаблон:
+
+        <a href="http://google.com.ua">Google</a>
+        <a href="http://itea.ua/">ITEA</a>
+        <a href="https://www.youtube.com/">Youtube</a>
+
+        для запрета вызова контектстного меню, нужно в функцию обработчик передать событие
+        element.onevent = function(e){...}
+        и вызвать внутри этой функции из этой переменной
+        e.preventDefault(); <- Отмена действия по умолчанию
+
+        Повтороное кажатие на эту кнопку правой или левой кнопкой мыши должно очистить блок.
+
+      4. На кнопку с обработчиком нажатия (onkeydown) повесить обработчик который будет
+        Выводить число нажатий на любую из клавиш клавиатуры
+
+
+    */
+
+    var mouseHover = document.getElementById('mouseHover');
+    var mouseClick = document.getElementById('mouseClick');
+    var mouseContext = document.getElementById('mouseContext');
+    var keyboardButton = document.getElementById('keyboardButton');
+
+    mouseHover.onmouseenter = function(){
+      var li = document.createElement('li');
+      li.innerText = 'Hovered';
+      li.className = randomColor();
+      document.getElementById('hoverResult').appendChild(li);
+    }
+
+    function randomColor() {
+      var arr = ['red', 'blue', 'green', 'orange', 'purple'];
+      return arr[Math.floor(Math.random() * (5 - 0) + 0)];
+    }
+
+    var clickIndex = 0;
+    var direction = true;
+
+    mouseClick.onclick = function(){
+      var arr1 = ['six', 'two', 'three', 'four', 'one', 'five'];
+      var arr2 = ['one', 'two', 'three', 'four', 'five', 'six'];
+
+      if(clickIndex <=5 && direction) {
+        clickResult.classList.remove(arr1[clickIndex]);
+        clickIndex++;
+      } else if(!direction) {
+        clickResult.classList.add(arr2[clickIndex]);
+        clickIndex++;
+      } else {
+        direction = false;
+        clickIndex = 0;
+      }
+
+      if(clickIndex === 7) {
+        direction = true;
+        clickIndex = 0;
+      }
+    }
+
+    var showContext   = true,
+        contextResult = document.getElementById('contextResult');
+        contextResult.style.flexFlow = 'column';
+    
+    mouseContext.oncontextmenu = function(e){
+      e.preventDefault();
+      console.log('context');
+      if(showContext){
+        var ul = document.createElement('ul');
+        ul.appendChild( createLinkLi('http://google.com.ua', 'Goole') );
+        ul.appendChild( createLinkLi('http://itea.ua/', 'ITEa') );
+        ul.appendChild( createLinkLi('https://www.youtube.com/', 'YouTube') );
+        contextResult.appendChild(ul);
+      }else{
+        contextResult.innerHTML = '';
+
+      }
+      showContext = !showContext;
+    }
+
+    keyboardButton.onkeydown = (function() {
+      var counter = 0;
+      return function() {
+        console.log('keyboard');
+        keyboardResult.innerText = ++counter;
+      }
+    })();
+
+
+    function createLinkLi(href, text) {
+      var link = document.createElement('a'),
+          li   = document.createElement('li');
+      link.href = href;
+      link.innerText = text;
+      li.appendChild(link);
+      return li;
+    }
+  </script>
+</body>
+</html>
