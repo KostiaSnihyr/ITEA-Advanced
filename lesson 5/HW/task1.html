@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Task1</title>
+</head>
+<body>
+  <div id="CommentsFeed"></div>
+  <script>
+
+    var defaulComment = {
+    avatarUrl: 'https://source.unsplash.com/random/200x102',
+    addLike: function() {
+        this.likes++;
+    }
+    }
+
+    function Comment(name, text, avatarUrl) {
+    this.name = name;
+    this.text = text;
+    if(avatarUrl !== undefined) {
+        this.avatarUrl = avatarUrl;
+    }
+    this.likes = 0;
+    }
+
+    var myComment1 = new Comment('Misha', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus, commodi!', defaulComment.avatarUrl),
+    myComment2 = new Comment('Volodya', 'Lorem ipsum dolor.', defaulComment.avatarUrl),
+    myComment3 = new Comment('Sasha', 'Lorem ipsum dolor sit amet.', 'https://source.unsplash.com/random/200x100'),
+    myComment4 = new Comment('Natasha', 'Delectus, commodi!', defaulComment.avatarUrl);
+
+    var CommentsArray = [myComment1, myComment2, myComment3, myComment4];
+    console.log(CommentsArray);
+
+    function CommentsPage(arr) {
+        var commentsFeed = document.createElement('div');
+        commentsFeed.id = 'CommentsFeed';
+        arr.forEach(function(element) {
+        var wrCom = document.createElement('div'),
+            h3Com = document.createElement('h3'),
+            imgCom= document.createElement('img'),
+            pCom  = document.createElement('p');
+            console.log('element', element);
+
+        imgCom.setAttribute('src', element.avatarUrl);
+        h3Com.innerText = element.name;
+        pCom.innerText = element.text;
+
+        wrCom.appendChild(imgCom);
+        wrCom.appendChild(h3Com);
+        wrCom.appendChild(pCom);
+
+        commentsFeed.appendChild(wrCom);
+        });
+        document.body.appendChild(commentsFeed);
+    }
+
+        CommentsPage(CommentsArray);
+  </script>
+</body>
+</html>
