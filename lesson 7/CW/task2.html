@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Constructors</title>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <form>
+        <label for="author">
+          <span>Author</span>
+          <select id="author" name="author">
+            <option value="Taras Shevchenko">Taras Shevchenko</option>
+            <option value="Ivan Franko">Ivan Franko</option>
+            <option value="Vasyl Stys">Vasyl Stys</option>
+            <option value="Oles Gonchar">Oles Gonchar</option>
+          </select>
+        </label>
+
+        <label for="message">
+          <span>Message</span>
+          <textarea placeholder="Your Message" id="message"></textarea>
+        </label>
+
+        <button type="submit">Send Message</button>
+      </form>
+    </header>
+
+    <section>
+      <ul id="message_list">
+      </ul>
+
+    </section>
+
+  </div>
+
+
+  <script>
+  /*
+    Задание на классы.
+
+    Создать класс Message конструктор котрого состоит из следующих полей:
+    id, author, text, date, answers
+
+    У этого класса будет два метода:
+    SkipMessage() -> которое должно найти сообщение и удалить его из массива.
+    AnswerMessage()-> должно отрыть поле ввода, в который вы сможете ввести ответ
+    SendAnswer() -> метод который «отравляет» ответ, при этом обновляя поле ответа(answers) в вашем объекте с сообщением.
+
+    В метод SendAnswer нужно передать обьект класса Answer который наследуется от класса Message,
+    Но еще дополнительно будет иметь поле parentId.
+
+
+    message = {
+      id: '',
+      author: '',
+      text: '',
+      date: '',
+      answers: [
+        {
+          id: '',
+          author: '',
+          text: '',
+          date: '',
+          parentId: '',
+          answers: ''
+        }
+      ]
+    }
+
+    +Bonus: После создании сообщение добавляется в массив со всеми сообщениями, которые потом будут выводится на экран.
+
+    _ _ _
+
+    Задание можно разбелить на две части:
+      1. Создание самого сообщения:
+      id->выдаётся автоматом
+      Author-> селект с выбором автора
+      Text -> текст сообщения
+      date -> автоматически в момент создания
+
+      Все данные беруться с формы. Массив с сообщениями передается в функцию рендера, которая генерирует сам список.
+
+      2. Ответ на сообщение
+
+  */
+
+
+  class Message {
+      constructor(author, text) {
+        let curDate = Date.now();
+        this.id = curDate;
+        this.author = author;
+        this.text = text;
+        curDate = new Date(curDate);
+        this.date = `${curDate.getDate()}/${curDate.getMonth()}/${curDate.getFullYear()}`;
+        this.answers = [this];
+
+        this.render = this.render.bind(this);
+        this.AnswerMessage = this.AnswerMessage.bind(this);
+        this.SendAnswer = this.SendAnswer.bind(this);
+        this.SkipMessage = this.SkipMessage.bind(this);
+      }
+
+      render() {
+        const wr = document.getElementById('message_list');
+        console.log(this.answers);
+        let li = document.createElement('li');
+            li.id = 'message-' + this.id;
+            li.innerHTML = `
+            <div class="message__date">
+              ${this.date}
+            </div>
+            <div class="message__author">
+              <b>${this.author}</b>
+            </div>
+            <div class="message__text">
+              ${this.text}
+            </div>
+            <div class="message__controls">
+              <button class="_skipMessage">Skip</button>
+              <button class="_answerMessage">Answer</button>
+            </div>
+        `;
+        const btnSkip   = li.querySelector('._skipMessage'),
+              btnAnswer = li.querySelector('._answerMessage');
+
+        btnSkip.addEventListener('click', this.SkipMessage);
+        btnAnswer.addEventListener('click', this.AnswerMessage);
+
+        wr.appendChild(li);
+      }
+
+      SkipMessage() {
+        document.querySelector('#message-' + this.id).remove();
+      }
+      AnswerMessage() {
+        let sendCom = document.createElement('div');
+        sendCom.innerHTML = `
+          <span>Comment</span><br />
+          <input type="text" placeholder="Author of comment" id="author"><br />
+          <textarea placeholder="Your comment" id="comment"></textarea><br />
+          <button>Send comment</button>
+        `;
+        const author  = sendCom.querySelector('#author'),
+              comment = sendCom.querySelector('#comment');
+        sendCom.querySelector('button').onclick = () => {
+          const curCom = new Answer(this.id, author.value, comment.value);
+          this.answers.push(curCom);
+          console.log(this.answers);
+
+
+          this.SendAnswer(curCom);
+          sendCom.remove();
+        };
+        document.querySelector('#message-' + this.id).appendChild(sendCom);
+        author.focus();
+      }
+      SendAnswer(answer) {
+        let lastCom = this.answers[this.answers.length - 1],
+            li      = document.createElement('li');
+        li.id = lastCom.id;
+        li.setAttribute('data-parentId', lastCom.parentId);
+        li.innerHTML = `
+          <div class="message__date">
+            ${answer.date}
+          </div>
+          <div class="message__author">
+            <b>${answer.author}</b>
+          </div>
+          <div class="message__text">
+            ${answer.text}
+          </div>
+        `;
+        document.querySelector('#message-' + answer.parentId).appendChild(li);
+      }
+    }
+    class Answer extends Message {
+      constructor(parentId, author, text) {
+        super(author, text);
+        this.parentId = parentId;
+      }
+    }
+
+
+    let author  = document.querySelector('#author'),
+        message = document.querySelector('#message'),
+        form    = document.querySelector('form'),
+        button  = document.querySelector('button');
+
+    form.onsubmit = function(e) { e.preventDefault(); };
+    button.addEventListener('click', function() {
+      let m = new Message(author.value, message.value);
+      m.render();
+      console.log(m);
+    });
+
+  </script>
+</body>
+</html>
