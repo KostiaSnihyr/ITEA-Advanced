@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Homework</title>
-    <style>
+    <!-- <style>
       .clock {
         position: relative;
         width: 100px;
@@ -19,23 +19,25 @@
         height: 50px;
         background-color: #333;
         transform-origin: 50% 100%;
-        transform: rotate(7deg);
+        transform: rotate(0deg);
       }
-    </style>
+    </style> -->
 </head>
 <body>
   <label for="r1" id="reverse">reverse</label>
-  <input type="radio" id="r1" name="reverse">
+  <input type="radio" id="r1" name="reverse" checked>
   <label for="r2" id="original">original</label>
-  <input type="radio" id="r2" name="reverse" checked>
+  <input type="radio" id="r2" name="reverse">
   <button id="start">start</button>
   <button id="stop">stop</button>
   <button id="reset">reset</button>
 
-  <div id="res"></div>
+  <div id="show-result">result:</div>
+
+  <!-- <div id="res"></div>
   <div class="clock">
     <div id="myDIV"></div>
-  </div>
+  </div> -->
       <!--
         Создайте счетчик секунд, который начинает отчет с 1 и заканчивается на 30,
         также добавьте кнопки который останавливают отчет, и запускают его заново и добавьте кнопку обнуляющую отчет.
@@ -49,46 +51,105 @@
       -->
       <script>
 
-        var time, id, mode = true, res = document.getElementById('res');
+let reverseDot = document.getElementById('r1');
+let originalDot = document.getElementById('r2');
 
-        document.getElementById('start').onclick = function() {
-          start(mode);
-        };
-        document.getElementById('stop').onclick = function() {
-          stop();
-        };
-        document.getElementById('reset').onclick = function() {
-          res.innerText = '';
-          reset();
-        };
-        document.getElementById('reverse').onclick = function() { mode = true; };
-        document.getElementById('original').onclick = function() { mode = false; };
+let start = document.getElementById('start');
+let stop = document.getElementById('stop');
+let reset = document.getElementById('reset');
 
-        function reset() {
-          time = 0;
-        }
+let show = document.getElementById('show-result');
+console.log(show);
 
-        function stop() {
-          clearInterval(id);
-        }
+let id, time;
 
-        function start(isReverse) {
-          if(isReverse) {
-            time = 30;
-            id = setInterval(function() {
-              if(time < 1) clearInterval(id);
-              res.innerText = time--;
-              // console.log(time--);
-            }, 1000);
-          } else {
-            time = 0;
-            id = setInterval(function() {
-              if(time > 29) clearInterval(id);
-              res.innerText = time++;
-              // console.log(time++);
-            }, 1000);
-          }
-        }
+function originalCount() {
+  if(time === undefined) {
+    time = 0;
+  }
+
+  id = setInterval(function() {
+    time++;
+    show.innerText = time;
+    if(time === 30) {
+      clearInterval(id);
+    }
+  }, 1000);
+}
+
+function reverseCount() {
+  if(time === undefined || time === 0) {
+    time = 30;
+  }
+  id = setInterval(function() {
+    time--;
+    show.innerText = time;
+    if(time === 0) {
+      clearInterval(id);
+    }
+  }, 1000);
+}
+
+start.addEventListener('click', function() {
+  if(originalDot.checked === true) {
+    originalCount();
+  } else if(originalDot.checked === false) {
+    reverseCount();
+  }
+});
+
+stop.addEventListener('click', function() {
+  clearInterval(id);
+});
+
+reset.addEventListener('click', function() {
+  time = 0;
+  show.innerText = time;
+  clearInterval(id);
+});
+
+
+
+        // var time, id, mode = true, res = document.getElementById('res');
+
+        // document.getElementById('start').onclick = function() {
+        //   start(mode);
+        // };
+        // document.getElementById('stop').onclick = function() {
+        //   stop();
+        // };
+        // document.getElementById('reset').onclick = function() {
+        //   res.innerText = '';
+        //   reset();
+        // };
+        // document.getElementById('reverse').onclick = function() { mode = true; };
+        // document.getElementById('original').onclick = function() { mode = false; };
+
+        // function reset() {
+        //   time = 0;
+        // }
+
+        // function stop() {
+        //   clearInterval(id);
+        // }
+
+        // function start(isReverse) {
+        //   if(isReverse) {
+        //     time = 30;
+        //     id = setInterval(function() {
+        //       if(time < 1) clearInterval(id);
+        //       res.innerText = time--;
+        //       // console.log(time--);
+        //     }, 1000);
+        //   } else {
+        //     time = 0;
+        //     id = setInterval(function() {
+        //       if(time > 29) clearInterval(id);
+        //       res.innerText = time++;
+        //       // console.log(time++);
+        //     }, 1000);
+        //   }
+        // }
         
 
       </script>

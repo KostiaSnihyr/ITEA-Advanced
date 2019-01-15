@@ -41,11 +41,45 @@
 */
 
 
-  fetch(url)
-    .then(testFunc)
-    .then(test2Func)
-    .then( res => {
-       fetch()
+  // fetch(url)
+  //   .then(testFunc)
+  //   .then(test2Func)
+  //   .then( res => {
+  //      fetch()
 
-    })
-    .then( func)
+  //   })
+  //   .then( func)
+
+  
+  fetch("http://www.json-generator.com/api/json/get/cgwbLkTxnS?indent=2")
+        .then(
+          (resp) => {
+            let randomPromiseElement = resp.json().then(
+              (arr) => {
+                resp = arr[randomInteger(0, arr.length - 1)];
+                return resp;
+              }
+            );
+            console.log(randomPromiseElement);
+            return fetch("http://www.json-generator.com/api/json/get/bTBBXQabKG?indent=5")
+              .then(
+                resp2 => {
+                  return resp2.json();
+                }
+            )
+          }
+        )
+        .then(
+          (resp) => {
+            console.log(resp[0]);
+          }
+        )
+
+  function randomInteger(min, max) {
+      var rand = min - 0.5 + Math.random() * (max - min + 1)
+      rand = Math.round(rand);
+      return rand;
+    }
+  // const dataFromServer = await fetch("http://www.json-generator.com/api/json/get/cgwbLkTxnS?indent=2");
+  // const resp = await dataFromServer.json();
+  // console.log(resp);

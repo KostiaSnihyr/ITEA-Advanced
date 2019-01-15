@@ -17,19 +17,18 @@
 
     const ITEA_COURSES = ["Курс HTML & CSS", "JavaScript базовый курс", "JavaScript продвинутый курс", "JavaScript Professional", "Angular 2.4 (базовый)", "Angular 2.4 (продвинутый)", "React.js", "React Native", "Node.js", "Vue.js"];
 
-    console.log( ITEA_COURSES.map(function(item) {
-      return { name: item, l: item.length};
-    }) );
+console.log( ITEA_COURSES.map(function(item) {
+  return { name: item, l: item.length};
+}) );
 
-    console.log( ITEA_COURSES.map(item=>item).sort((a, b) => {
-      return a.charCodeAt(0) - b.charCodeAt(0);
-    }) );
+console.log( ITEA_COURSES.map(item=>item).sort((a, b) => {
+  return a.charCodeAt(0) - b.charCodeAt(0);
+}) );
 
-    console.log(search('Курс HTML & CSS', ITEA_COURSES));
-    function search(str, arr) {
-      return !!(arr.indexOf(str) + 1);
-    }
-
+console.log(search('Курс HTML & CSS', ITEA_COURSES));
+function search(str, arr) {
+  return !!(arr.indexOf(str) + 1);
+}
     /*
       Задание 2:
       Написать фильтр массива по:
@@ -41,34 +40,108 @@
         - Селект или инпут с продолжительностью
         - Результат в виде списка фильмов
     */
+window.addEventListener('load', function() {
+  var stars = ['Elijah Wood', 'Ian McKellen', 'Orlando Bloom','Ewan McGregor',' Liam Neeson', 'Natalie Portman', 'Ewan McGregor', 'Billy Bob Thornton', 'Martin Freeman']
+  var movies = [
+      {
+        name: "Lord of the Rigs",
+        duration: 240,
+        starring: [ 'Elijah Wood', 'Ian McKellen', 'Orlando Bloom']
+      },
+      {
+        name: "Star Wars: Episode I - The Phantom Menace",
+        duration: 136,
+        starring: [ 'Ewan McGregor',' Liam Neeson', 'Natalie Portman']
+      },
+      {
+        name: "Fargo",
+        duration: 100,
+        starring: [ 'Ewan McGregor', 'Billy Bob Thornton', 'Martin Freeman']
+      },
+      {
+      name: "V for Vendetta",
+      duration: 150,
+      starring: [ 'Hugo Weaving', 'Natalie Portman', 'Rupert Graves']
+    }
+  ];
 
-      var stars = ['Elijah Wood', 'Ian McKellen', 'Orlando Bloom','Ewan McGregor',' Liam Neeson', 'Natalie Portman', 'Ewan McGregor', 'Billy Bob Thornton', 'Martin Freeman']
-      var movies = [
-          {
-            name: "Lord of the Rigs",
-            duration: 240,
-            starring: [ 'Elijah Wood', 'Ian McKellen', 'Orlando Bloom']
-          },
-          {
-            name: "Star Wars: Episode I - The Phantom Menace",
-            duration: 136,
-            starring: [ 'Ewan McGregor',' Liam Neeson', 'Natalie Portman']
-          },
-          {
-            name: "Fargo",
-            duration: 100,
-            starring: [ 'Ewan McGregor', 'Billy Bob Thornton', 'Martin Freeman']
-          },
-          {
-          name: "V for Vendetta",
-          duration: 150,
-          starring: [ 'Hugo Weaving', 'Natalie Portman', 'Rupert Graves']
+  var actorsSelector = document.getElementById('actors');
+  var durationsSelector = document.getElementById('duration');
+  var wrapperResults = document.getElementById('results');
+
+  var shooseActorOption = document.createElement('option');
+  var shooseDurationOption = document.createElement('option');
+
+  shooseActorOption.innerText = 'Choose actor';
+  actorsSelector.appendChild(shooseActorOption);
+  shooseActorOption.disabled = true;
+
+  shooseDurationOption.innerText = 'Choose duration';
+  durationsSelector.appendChild(shooseDurationOption);
+  shooseDurationOption.disabled = true;
+
+  for(i = 0; i < stars.length; i++) {
+    var actorOption = new Option(stars[i]);
+    actorsSelector.appendChild(actorOption);
+  }
+  for(i = 0; i < movies.length; i++) {
+    var durationOption = new Option(movies[i].duration);
+    durationsSelector.appendChild(durationOption);
+  }
+
+  let dataSearch = {};
+  actorsSelector.addEventListener('change', function(element) {
+    dataSearch.actor = element.target.value;
+    showMovies(dataSearch, movies);
+  });
+  durationsSelector.addEventListener('change', function(element) {
+    dataSearch.duration = element.target.value;
+    showMovies(dataSearch, movies);
+  });
+
+  function showMovies(data, movies) {
+    var arrDuration = [];
+    if(data.duration !== undefined) {
+      for (var i = 0; i < movies.length; i++) {
+        if(movies[i].duration == data.duration) arrDuration.push(movies[i].name);
+      }
+    }
+    var arrActor = [];
+    if(data.actor !== undefined) {
+      for (var i = 0; i < movies.length; i++) {
+        if(movies[i].starring.some(function(item) {
+          return item === data.actor;
+        })) arrActor.push(movies[i].name);
+      }
+    }
+    var res = [];
+    if(arrDuration.length < 1 && arrActor.length > 0) res = arrActor;
+    else if(arrDuration.length > 0 && arrActor.length < 1) res = arrDuration;
+    else {
+      for (var i = 0; i < arrDuration.length; i++) {
+        for (var j = 0; j < arrActor.length; j++) {
+          if(arrDuration[i] === arrActor[j]) res.push(arrDuration[i]);
         }
-        ];
+      }
+    }
+    console.log(res);
+
+    let li;
+    wrapperResults.innerHTML = '';
+    for (var i = 0; i < res.length; i++) {
+      li = document.createElement('li');
+      li.innerText = res[i];
+      wrapperResults.appendChild(li);
+    }
+  }
+});
+
 
     </script>
 </head>
 <body>
-
+  <select id="actors"></select>
+  <select id="duration"></select>
+  <ul id="results"></ul>
 </body>
 </html>
